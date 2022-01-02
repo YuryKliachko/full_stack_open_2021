@@ -35,16 +35,23 @@ const PersonForm = ({ persons, setPersons, showNotification }: { persons: Person
             })
             .catch((error) => {
                 console.log(error)
-                showNotification(error.message, true)
+                showNotification(error.response.data, true)
                 personsService.getPersonsList().then((personsList: Person[]) => updatePersonsList(personsList))
             })
             return
         }
 
-        personsService.addPerson({ name: newName, number: newNumber }).then(() => {
-            personsService.getPersonsList().then((personsList: Person[]) => updatePersonsList(personsList))
-            showNotification('Person has been added to the phonebook', false)
-        })
+        personsService.addPerson({ name: newName, number: newNumber })
+            .then(() => {
+                personsService.getPersonsList().then((personsList: Person[]) => updatePersonsList(personsList))
+                showNotification('Person has been added to the phonebook', false)
+            })
+            .catch(error => {
+                console.log(error)
+                showNotification(error.response.data, true)
+                personsService.getPersonsList().then((personsList: Person[]) => updatePersonsList(personsList))
+
+            })
 
     }
 
